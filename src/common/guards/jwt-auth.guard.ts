@@ -1,29 +1,28 @@
-import { BadRequestException, CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { Observable } from "rxjs";
+import { BadRequestException, CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class AuthGuard implements CanActivate{
-    constructor(private jwtService : JwtService){}
+export class JwtAuthGuard implements CanActivate {
+  constructor(private jwtService: JwtService) {}
 
-    async canActivate(context: ExecutionContext): Promise<boolean>{
-        try {
-            const req = context.switchToHttp().getRequest()
-            let token = req.headers.authorization
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    try {
+      const req = context.switchToHttp().getRequest();
+      let token = req.headers.authorization;
 
-            if(!token){
-                throw new UnauthorizedException()
-            }
+      if (!token) {
+        throw new UnauthorizedException('Token not found');
+      }
 
-            token = token.split(" ")[1]
+      token = token.split(' ')[1];
 
-            let user = this.jwtService.verify(token)
+      const user = this.jwtService.verify(token);
 
-            req["user"] = user
+      req['user'] = user;
 
-            return true
-        } catch (error) {
-            throw new BadRequestException()
-        }    
+      return true;
+    } catch (error) {
+      throw new BadRequestException('Invalid token');
     }
+  }
 }
