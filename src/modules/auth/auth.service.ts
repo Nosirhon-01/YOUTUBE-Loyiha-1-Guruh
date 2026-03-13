@@ -2,14 +2,23 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../../common/prisma/prisma.service';
+import { PrismaService } from 'src/core/database/prisma.service';
+import { RedisService } from 'src/core/redis/redis.service';
+import { smsService } from 'src/core/services/send.sms.service';
+import { EmailService } from 'src/common/email/email.service';
+import { generateOtp } from 'src/core/utils/generate.sms.code';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
+    private redisService: RedisService,
     private prisma: PrismaService,
+    private smsService : smsService,
+    private emailService : EmailService
   ) {}
+
+  // register qilganda otp jo'natiladi emailiga to'g'ri kirgizsa keyin loginga o'tadi
 
   async register(payload: RegisterDto) {
     const existingUser = await this.prisma.user.findUnique({
@@ -21,23 +30,23 @@ export class AuthService {
     }
 
     const user = await this.prisma.user.create({
-      data: {
-        email: payload.email,
-        username: payload.username,
-        password: payload.password,
-      },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-      },
+      data: payload
     });
 
     const token = this.jwtService.sign({ id: user.id, email: user.email });
 
+    const otp = generateOtp()
+
+    await this.emailService.sendEmail(
+      payload.email,
+      payload.username,
+      payload.password,
+      otp
+    );
     return {
-      user,
-      token,
+        success: true,
+        message: "Confirmation code is sent to your phone number",
+        token,
     };
   }
 
