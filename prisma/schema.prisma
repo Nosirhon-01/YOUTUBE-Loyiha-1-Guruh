@@ -8,6 +8,12 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum LikeType {
+  LIKE
+  DISLIKE
+}
+
+
 model User {
   id        Int     @id @default(autoincrement())
   email     String  @unique
@@ -16,6 +22,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   videos    Video[]
+ 
+  comments  Comment[]
+  likes     Like[]
 }
 
 model Video {
@@ -28,4 +37,46 @@ model Video {
   user        User    @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
+  comments  Comment[]
+  likes     Like[]
+
+
+}
+model Comment {
+  id         Int      @id @default(autoincrement())
+  content    String
+  likesCount Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  // Relations 
+  authorId   Int
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  videoId    Int
+  video      Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  
+  likes      Like[]
+}
+
+model Like {
+  id        Int      @id @default(autoincrement()) 
+  type      LikeType
+  createdAt DateTime @default(now())
+
+  // Relations 
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  videoId   Int?
+  video     Video?   @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  
+  commentId Int?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  // Bir user bir videoga faqat bir marta like/dislike
+  @@unique([userId, videoId])
+  // Bir user bir commentga faqat bir marta like/dislike
+  @@unique([userId, commentId])
+  
 }
