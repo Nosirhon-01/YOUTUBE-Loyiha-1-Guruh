@@ -9,6 +9,8 @@ export class JwtAuthGuard implements CanActivate {
     try {
       const req = context.switchToHttp().getRequest();
       let token = req.headers.authorization;
+      console.log(req.headers.authorization);
+      
 
       if (!token) {
         throw new UnauthorizedException('Token not found');

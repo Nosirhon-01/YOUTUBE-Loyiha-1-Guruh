@@ -1,9 +1,8 @@
-// src/modules/likes/likes.controller.ts
 import { Controller, Post, Body, UseGuards, Request, Delete, Param, Get } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { LikesService } from './likes.service';
 import { CreateLikeDto } from './dto/create-like.dto';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @ApiTags('likes')
 @Controller('likes')

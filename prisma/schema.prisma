@@ -5,12 +5,18 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+
 }
 
 enum LikeType {
   LIKE
   DISLIKE
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  USER
 }
 
 
@@ -19,6 +25,7 @@ model User {
   email     String  @unique
   password  String
   username  String
+  role      String   @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   videos    Video[]
