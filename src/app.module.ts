@@ -7,17 +7,19 @@ import { CommentsModule } from './modules/comments/comments.module';
 import { LikesService } from './modules/likes/likes.service';
 import { LikesController } from './modules/likes/likes.controller';
 import { LikesModule } from './modules/likes/likes.module';
+import { PrismaModule } from "./common/prisma/prisma.module";
 
 @Module({
     imports:[
         ConfigModule.forRoot({
             isGlobal: true
         }),
+        PrismaModule,
         AuthModule,
         UsersModule,
         VideosModule,
         CommentsModule,
-        LikesModule
+        LikesModule,
     ],
     providers: [LikesService],
     controllers: [LikesController]
