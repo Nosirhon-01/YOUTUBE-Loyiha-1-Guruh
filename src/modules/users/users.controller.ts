@@ -1,6 +1,7 @@
-import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { log } from 'node:console';
 
 @Controller('users')
 export class UsersController {
@@ -8,7 +9,9 @@ export class UsersController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  async getCurrentUser(@Request() req) {
-    return this.usersService.getUserById(req.user.id);
+  async getCurrentUser(@Req() req: Request) {
+    console.log(req);
+    
+    // return this.usersService.getUserById(req.user.id);
   }
 }
