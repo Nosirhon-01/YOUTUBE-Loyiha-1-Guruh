@@ -7,7 +7,8 @@ import { CommentsModule } from './modules/comments/comments.module';
 import { LikesService } from './modules/likes/likes.service';
 import { LikesController } from './modules/likes/likes.controller';
 import { LikesModule } from './modules/likes/likes.module';
-import { PrismaModule } from "./common/prisma/prisma.module";
+import { RedisModule } from "./core/redis/redis.module";
+import { PrismaModule } from "./core/database/prisma.module";
 
 @Module({
     imports:[
@@ -15,6 +16,7 @@ import { PrismaModule } from "./common/prisma/prisma.module";
             isGlobal: true
         }),
         PrismaModule,
+        RedisModule,
         AuthModule,
         UsersModule,
         VideosModule,
