@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { CreateVideoDto } from './dto/create-video.dto';
+import { UploadVideoDto } from './dto/upload-video.dto';
 
 @Injectable()
 export class VideosService {
@@ -119,5 +120,35 @@ export class VideosService {
     }
 
     return video;
+  }
+
+  async uploadVideo(file: any, uploadVideoDto: UploadVideoDto, userId: number) {
+    const videoUrl = file.path.replace(/\\/g, '/');
+
+    const video = await this.prisma.video.create({
+      data: {
+        title: uploadVideoDto.title,
+        description: uploadVideoDto.description || '',
+        url: videoUrl,
+        userId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return {
+      message: 'Video uploaded successfully',
+      video: {
+        id: video.id,
+        title: video.title,
+        videoUrl: video.url,
+      },
+    };
   }
 }
