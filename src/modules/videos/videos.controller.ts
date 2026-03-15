@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Query, UseGuards, Request, BadRequestException } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { AuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @Controller('videos')
 export class VideosController {
@@ -24,7 +24,7 @@ export class VideosController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   async createVideo(@Body() createVideoDto: CreateVideoDto, @Request() req) {
     return this.videosService.createVideo(createVideoDto, req.user.id);
   }

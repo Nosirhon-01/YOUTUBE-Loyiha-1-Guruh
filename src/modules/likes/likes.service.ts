@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { CreateLikeDto } from './dto/create-like.dto';
-import { PrismaService } from 'src/common/prisma/prisma.service';
+import { PrismaService } from 'src/core/database/prisma.service';
 
 @Injectable()
 export class LikesService {

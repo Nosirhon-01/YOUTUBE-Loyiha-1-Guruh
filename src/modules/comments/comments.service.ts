@@ -1,8 +1,8 @@
 // src/modules/comments/comments.service.ts
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CreateCommentDto } from './dto/create.comment.dto';
 import { UpdateCommentDto } from './dto/update.comment.dto';
+import { PrismaService } from 'src/core/database/prisma.service';
 
 
 @Injectable()
@@ -41,7 +41,7 @@ export class CommentsService {
 
     return {
       success: true,
-      message: 'Comment muvaffaqiyatli qo\'shildi',
+      message: `Comment muvaffaqiyatli qo'shildi`,
       data: comment,
     };
   }
@@ -126,7 +126,7 @@ export class CommentsService {
     });
 
     if (comment.authorId !== userId && user?.role !== 'ADMIN') {
-      throw new ForbiddenException('Siz bu commentni o\'chira olmaysiz');
+      throw new ForbiddenException(`Siz bu commentni o'chira olmaysiz`);
     }
 
     await this.prisma.comment.delete({
@@ -135,7 +135,7 @@ export class CommentsService {
 
     return {
       success: true,
-      message: 'Comment muvaffaqiyatli o\'chirildi',
+      message: `Comment muvaffaqiyatli o'chirildi`,
     };
   }
 }

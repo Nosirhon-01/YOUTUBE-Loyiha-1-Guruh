@@ -2,15 +2,15 @@ import { Controller, Post, Body, UseGuards, Request, Delete, Param, Get } from '
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { LikesService } from './likes.service';
 import { CreateLikeDto } from './dto/create-like.dto';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { AuthGuard } from 'src/common/guards/jwt-auth.guard';
 
-@ApiTags('likes')
+@ApiTags('Likes')
 @Controller('likes')
 export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Like yoki dislike qo\'shish/o\'zgartirish' })
   async create(
@@ -22,7 +22,7 @@ export class LikesController {
   }
 
   @Delete()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Likeni o\'chirish' })
   async remove(
@@ -46,7 +46,7 @@ export class LikesController {
   }
 
   @Get('video/:videoId/user')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Foydalanuvchining video reaksiyasini olish' })
   async getUserVideoReaction(

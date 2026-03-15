@@ -3,17 +3,19 @@ import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create.comment.dto';
 import { UpdateCommentDto } from './dto/update.comment.dto';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { AuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { Roles } from 'src/common/decorators/roles';
 
 
-@ApiTags('comments')
+@ApiBearerAuth()
+@ApiTags('Comments')
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+//   @Roles()
   @ApiOperation({ summary: 'Yangi comment yaratish' })
   async create(
     @Body() createCommentDto: CreateCommentDto,
@@ -31,8 +33,7 @@ export class CommentsController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Commentni tahrirlash' })
   async update(
     @Param('id') id: number,
@@ -44,9 +45,8 @@ export class CommentsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Commentni o\'chirish' })
+  @UseGuards(AuthGuard) 
+  @ApiOperation({ summary: `Commentni o'chirish` })
   async remove(@Param('id') id: number, @Request() req) {
     const userId = req.user.id;
     return this.commentsService.remove(id, userId);
